@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TEST</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css"></script>
+</head>
+<body>
+
+<div class="container mt-3" id=pat>
+  <ul class="nav nav-tabs">
+    <li class="nav-item" id="exc">
+        <a class="nav-link active" href="#">Financial Trends</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="Home.html">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="ct.html">Custom Trends</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="tlt.html">Trips and Location Trends</a>
+    </li>
+  </ul>
+  <div class="container" id="side">
+    <h5>Monthly Trend Quicklinks</h5>
+    <ul id="months" class="collection">
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="January">January
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="February">February
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="March">March
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="April">April
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="May">May
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="June">June
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="July">July
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="August">August
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="September">September
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="October">October
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="November">November
+      </li>
+      <li class="collection-item">
+        <input type="checkbox" name="asc" value="December">December
+      </li>
+    </ul>
+    <p>
+      <input type="button" id="clickall" value="Select All"/>
+      <input type="button" id="unclickall" value="Unselect All"/>
+    </p>
+    <script type="text/javascript">
+      $('#clickall').click(function(){
+        $('input[name=asc]').prop('checked',true);
+      });
+      $('#unclickall').click(function(){
+        $('input[name=asc]').prop('checked',false);
+      });
+    </script>
+    <button onclick="func2()">Submit</button>
+    <script>
+      function func2(){
+        var checks = new Array();
+        var ul = document.getElementById("months");
+        var chk = ul.getElementsByTagName("input");
+        for(var i=0;i<chk.length;i++){
+          if(chk[i].checked){
+            checks.push(chk[i].value);
+          }
+        }
+        var query = "?q1=" + checks[0];
+        for(var j=1;j<checks.length;j++){
+          query += "&q"+(j+1)+"="+checks[j];
+        }
+        //alert(query);
+        window.location.href = "trendviewer.html" + query;
+      }
+    </script>
+  </div>
+  <div id="sep">
+    <form id="form1" method="get" action="trendviewer.html">
+      Start Date: <input type="date" id="startdate" name="startdate"><br>
+      End Date: <input type="date" id="enddate" name="enddate"><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
