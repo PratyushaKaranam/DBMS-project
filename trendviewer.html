@@ -1,212 +1,238 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-        <link href="style.css" rel="stylesheet" type="text/css"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    </head>
-    <body>
-        <div class="container mt-3" id="pat">
-            <ul class="nav nav-tabs">
-              <li class="nav-item" id="excp">
-                  <a class="nav-link active" href="#">Trends Viewer</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="Home.html">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="ct.html">Custom Trends</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="tlt.html">Trips and Location Trends</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="ft.html">Financial Trends</a>
-              </li>
-            </ul>
-            <!-- <div id="result">Data: </div>
-            <div id="result1">Dates: </div> -->
-            <table id="charts" style="width:100%">
-              <tr>
-                <td>Summary Statistics</td>
-                <td>
-                  <table style="width:100%">
-                  <tr>
-                    <td>Start Date:</td>
-                    <td id="startdate"></td>
-                  </tr>
-                  <tr>
-                    <td>End Date:</td>
-                    <td id="enddate"></td>
-                  </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td><canvas id="myChart1"></canvas></td>
-                <td><canvas id="myChart2"></canvas></td>
-              </tr>
-            </table>
-            <script>
-                var param = location.search.substring(1).split('&');
-                var temp;
-                var text="";
-                var label = new Array();
-                var lab = new Array();
-                var day;
-                var month;
-                var year;
-                for (var i=0;i<param.length;i++){
-                    temp = param[i].split("=");
-                    label.push(unescape(temp[1]));
-                    lab.push(unescape(temp[1]));
-                    text += "<br>" + unescape(temp[1]);
-                }
-                //document.getElementById("result").innerHTML += text;
-                if(temp[0]=='enddate'){
-                  var sdate = new Date(lab[0]);
-                  var edate = new Date(lab[1]);
-                  Date.prototype.addDay = function(days){
-                    var date = new Date(this.valueOf());
-                    date.setDate(date.getDate() + days);
-                    return date;
-                  }
-                  function getDateArray(start, end) {
-                    var arr = new Array();
-                    var dt = start;
-                    while (dt <= end) {
-                      date = new Date(dt);
-                      //alert(date);
-                      day = date.getDate();
-                      //alert(day);
-                      month = date.getMonth() + 1;
-                      //alert(month);
-                      year = date.getFullYear();
-                      //alert(year);
-                      if(day<10){
-                        //alert(day);
-                        day = '0'+day;
-                        //alert(day);
-                      } 
-                      if(month<10){
-                        //alert(month)
-                        month = '0'+month;
-                        //alert(month);
-                      }
-                      var date1 = month+'-'+day+'-'+year;
-                      //alert(date1);
-                      arr.push(date1);
-                      dt = dt.addDay(1);
-                    }
-                    //alert(arr);
-                    return arr;
-                  }
-                  document.getElementById("startdate").innerHTML = lab[0];
-                  document.getElementById("enddate").innerHTML = lab[1];
 
-                  label = getDateArray(sdate.addDay(1), edate.addDay(1));
-                  //alert(label);
-                  
-                  //alert(label);
-                  //document.getElementById("result1").innerHTML = label;
-                }
-                
-                var dataset1 = new Array();
-                var dataset2 = new Array();
-                for(var i=0;i<label.length;i++){
-                  dataset1.push(Math.floor(Math.random()*label.length));
-                  dataset2.push(Math.floor(Math.random()*label.length));
-                }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+
+<script>
+  $(document).ready(function () {
+    $.ajax(
+      {
+        url: "/api/test/query",
+        type: "GET",
+        success: function (result) {
+          console.log(result);
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      }
+    )
+  })
+
+
+</script>
+
+
+<body>
+  <div class="container mt-3" id="pat">
+    <ul class="nav nav-tabs">
+      <li class="nav-item" id="excp">
+        <a class="nav-link active" href="#">Trends Viewer</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="ct.html">Custom Trends</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tlt.html">Trips and Location Trends</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="ft.html">Financial Trends</a>
+      </li>
+    </ul>
+    <!-- <div id="result">Data: </div>
+            <div id="result1">Dates: </div> -->
+    <table id="charts" style="width:100%">
+      <tr>
+        <td>Summary Statistics</td>
+        <td>
+          <table style="width:100%">
+            <tr>
+              <td>Start Date:</td>
+              <td id="startdate"></td>
+            </tr>
+            <tr>
+              <td>End Date:</td>
+              <td id="enddate"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td><canvas id="myChart1"></canvas></td>
+        <td><canvas id="myChart2"></canvas></td>
+      </tr>
+    </table>
+    <script>
+      var param = location.search.substring(1).split('&');
+      var temp;
+      var text = "";
+      var label = new Array();
+      var lab = new Array();
+      var day;
+      var month;
+      var year;
+      for (var i = 0; i < param.length; i++) {
+        temp = param[i].split("=");
+        label.push(unescape(temp[1]));
+        lab.push(unescape(temp[1]));
+        text += "<br>" + unescape(temp[1]);
+      }
+      //document.getElementById("result").innerHTML += text;
+      if (temp[0] == 'enddate') {
+        var sdate = new Date(lab[0]);
+        var edate = new Date(lab[1]);
+        Date.prototype.addDay = function (days) {
+          var date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        }
+        function getDateArray(start, end) {
+          var arr = new Array();
+          var dt = start;
+          while (dt <= end) {
+            date = new Date(dt);
+            //alert(date);
+            day = date.getDate();
+            //alert(day);
+            month = date.getMonth() + 1;
+            //alert(month);
+            year = date.getFullYear();
+            //alert(year);
+            if (day < 10) {
+              //alert(day);
+              day = '0' + day;
+              //alert(day);
+            }
+            if (month < 10) {
+              //alert(month)
+              month = '0' + month;
+              //alert(month);
+            }
+            var date1 = month + '-' + day + '-' + year;
+            //alert(date1);
+            arr.push(date1);
+            dt = dt.addDay(1);
+          }
+          //alert(arr);
+          return arr;
+        }
+        document.getElementById("startdate").innerHTML = lab[0];
+        document.getElementById("enddate").innerHTML = lab[1];
+
+        label = getDateArray(sdate.addDay(1), edate.addDay(1));
+        //alert(label);
+
+        //alert(label);
+        //document.getElementById("result1").innerHTML = label;
+      }
+
+      var dataset1 = new Array();
+      var dataset2 = new Array();
+      for (var i = 0; i < label.length; i++) {
+        dataset1.push(Math.floor(Math.random() * label.length));
+        dataset2.push(Math.floor(Math.random() * label.length));
+      }
                 //alert(dataset);
-            </script>
-            
-              <!-- <div id="allcharts">
+    </script>
+
+    <!-- <div id="allcharts">
                 <div id="chart1"><canvas id="myChart1"></canvas></div>
                 <div id="chart2"><canvas id="myChart2"></canvas></div>
               </div> -->
-              <script>
-                var ctx = document.getElementById('myChart1').getContext('2d');
-                var myChart = new Chart(ctx, {type: 'line',
-                  data: {
-                    //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    labels: label,
-                    datasets: [{
-                      label: '# random',
-                      data: dataset1,
-                      // backgroundColor: [
-                      //   'rgba(255, 99, 132, 0.2)',
-                      //   'rgba(54, 162, 235, 0.2)',
-                      //   'rgba(255, 206, 86, 0.2)',
-                      //   'rgba(75, 192, 192, 0.2)',
-                      //   'rgba(153, 102, 255, 0.2)',
-                      //   'rgba(255, 159, 64, 0.2)'
-                      // ],
-                      borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                      //   'rgba(54, 162, 235, 1)',
-                      //   'rgba(255, 206, 86, 1)',
-                      //   'rgba(75, 192, 192, 1)',
-                      //   'rgba(153, 102, 255, 1)',
-                      //   'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 3
-                    }]
-                  },
-                  options: {
-                    scales: {
-                      yAxes: [{
-                        ticks: {
-                          beginAtZero: true
-                        }
-                      }]
-                    }
-                  }
-                });
-              </script>
-              <script>
-                var ctx = document.getElementById('myChart2').getContext('2d');
-                var myChart = new Chart(ctx, {type: 'line',
-                  data: {
-                    //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    labels: label,
-                    datasets: [{
-                      label: '# random',
-                      data: dataset2,
-                      // backgroundColor: [
-                      //   'rgba(255, 99, 132, 0.2)',
-                      //   'rgba(54, 162, 235, 0.2)',
-                      //   'rgba(255, 206, 86, 0.2)',
-                      //   'rgba(75, 192, 192, 0.2)',
-                      //   'rgba(153, 102, 255, 0.2)',
-                      //   'rgba(255, 159, 64, 0.2)'
-                      // ],
-                      borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                      //   'rgba(54, 162, 235, 1)',
-                      //   'rgba(255, 206, 86, 1)',
-                      //   'rgba(75, 192, 192, 1)',
-                      //   'rgba(153, 102, 255, 1)',
-                      //   'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 3
-                    }]
-                  },
-                  options: {
-                    scales: {
-                      yAxes: [{
-                        ticks: {
-                          beginAtZero: true
-                        }
-                      }]
-                    }
-                  }
-                });
-              </script>
-        </div>
-    </body>
+    <script>
+      var ctx = document.getElementById('myChart1').getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          labels: label,
+          datasets: [{
+            label: '# random',
+            data: dataset1,
+            // backgroundColor: [
+            //   'rgba(255, 99, 132, 0.2)',
+            //   'rgba(54, 162, 235, 0.2)',
+            //   'rgba(255, 206, 86, 0.2)',
+            //   'rgba(75, 192, 192, 0.2)',
+            //   'rgba(153, 102, 255, 0.2)',
+            //   'rgba(255, 159, 64, 0.2)'
+            // ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              //   'rgba(54, 162, 235, 1)',
+              //   'rgba(255, 206, 86, 1)',
+              //   'rgba(75, 192, 192, 1)',
+              //   'rgba(153, 102, 255, 1)',
+              //   'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 3
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    </script>
+    <script>
+      var ctx = document.getElementById('myChart2').getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+          labels: label,
+          datasets: [{
+            label: '# random',
+            data: dataset2,
+            // backgroundColor: [
+            //   'rgba(255, 99, 132, 0.2)',
+            //   'rgba(54, 162, 235, 0.2)',
+            //   'rgba(255, 206, 86, 0.2)',
+            //   'rgba(75, 192, 192, 0.2)',
+            //   'rgba(153, 102, 255, 0.2)',
+            //   'rgba(255, 159, 64, 0.2)'
+            // ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              //   'rgba(54, 162, 235, 1)',
+              //   'rgba(255, 206, 86, 1)',
+              //   'rgba(75, 192, 192, 1)',
+              //   'rgba(153, 102, 255, 1)',
+              //   'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 3
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    </script>
+  </div>
+</body>
+
 </html>
