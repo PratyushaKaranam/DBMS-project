@@ -54,3 +54,9 @@ table#charts td{
     width: 50%;
     height: 50%;
 }
+#myChart1{
+    width: 100%;
+}
+#myChart2{
+    width: 100%;
+}

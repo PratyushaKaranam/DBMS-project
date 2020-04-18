@@ -13,6 +13,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.19.0/js/canvas-to-blob.js"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
+  <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
+  <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33" type="text/css" rel="stylesheet">
+  <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33" type="text/css" rel="stylesheet">
+
 </head>
 
 <script>
@@ -73,12 +81,15 @@
         </td>
       </tr>
       <tr>
-        <td><canvas id="myChart1"></canvas></td>
-        <td><canvas id="myChart2"></canvas></td>
+        <td><div id="myChart1"></div></td>
+        <td><div id="myChart2"></div></td>
       </tr>
       <tr>
-        <td><button onclick="downloadPDF1()">DOWNLOAD</button></td>
-        <td><button onclick="downloadPDF2()">DOWNLOAD</button></td>
+        <!-- <td><button onclick="downloadPDF1()">DOWNLOAD</button></td> -->
+        <!-- <td><button onclick="toPDF()">DOWNLOAD</button></td> -->
+        <!-- <td><button id="downloadPdf">DOWNLOAD</button></td> -->
+        <td><button onclick="savePDF1()">DOWNLOAD</button></td>
+        <td><button onclick="savePDF2()">DOWNLOAD</button></td>
       </tr>
     </table>
     <script>
@@ -157,124 +168,190 @@
         dataset1.push(Math.floor(Math.random() * label.length));
         dataset2.push(Math.floor(Math.random() * label.length));
       }
-                //alert(dataset);
+      //alert(dataset);
+      // creating dataset
+      // var dataset = new Array(label.length);
+      // for(i=0;i<dataset.length;i++){
+      //   dataset[i] = new Array(2);
+      // }
+      // for(i=0;i<dataset.length;i++){
+      //   dataset[i][0] = label[i];
+      //   dataset[i][1] = dataset1[i];
+      // }
+      //window.alert(dataset);
     </script>
 
     <!-- GRAPH 1-->
 
     <script>
-      var chart1 = document.getElementById('myChart1').getContext('2d');
-      var myChart = new Chart(chart1, {
-        type: 'line',
-        data: {
-          //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          labels: label,                                                    
-          datasets: [{
-            label: '# random',
-            data: dataset1,                                                 
-            // backgroundColor: [
-            //   'rgba(255, 99, 132, 0.2)',
-            //   'rgba(54, 162, 235, 0.2)',
-            //   'rgba(255, 206, 86, 0.2)',
-            //   'rgba(75, 192, 192, 0.2)',
-            //   'rgba(153, 102, 255, 0.2)',
-            //   'rgba(255, 159, 64, 0.2)'
-            // ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              //   'rgba(54, 162, 235, 1)',
-              //   'rgba(255, 206, 86, 1)',
-              //   'rgba(75, 192, 192, 1)',
-              //   'rgba(153, 102, 255, 1)',
-              //   'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 3
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
+      //anychart.onDocumentReady(function (label,dataset1) {
+        // create data set on our data
+        var dataSet = anychart.data.set(getData(label,dataset1));
+        // map data for the first series, take x from the zero column and value from the first column of data set
+        var seriesData_1 = dataSet.mapAs({'x':0, 'value':1});
+        // create line chart
+        var chart1 = anychart.line();
+        // turn on chart animation
+        chart1.animation(true);
+        // turn on the crosshair
+        chart1.crosshair()
+                .enabled(true)
+                .yLabel(false)
+                .yStroke(null);
+
+        // set tooltip mode to point
+        chart1.tooltip().positionMode('point');
+        // set chart title text settings
+        chart1.title('selected months/dates');
+        // set yAxis title
+        chart1.yAxis().title('Data from Database');
+        chart1.xAxis().labels().padding(5);
+
+        // create first series with mapped data
+        var series_1 = chart1.line(seriesData_1);
+        series_1.name('random');
+        series_1.markers()
+                .enabled(true)
+                .type('circle')
+                .size(4);
+        series_1.tooltip()
+                .position('right')
+                .anchor('left-center')
+                .offsetX(5)
+                .offsetY(5);
+
+        chart1.legend()
+                .enabled(true)
+                .fontSize(13)
+                .padding([0, 0, 10, 0]);
+        // set container id for the chart
+        chart1.container('myChart1');
+        // initiate chart drawing
+        chart1.draw();
+      function getData(label,dataset1) {
+        var dataset = new Array(label.length);
+        for(i=0;i<dataset.length;i++){
+          dataset[i] = new Array(2);
         }
-      });
+        for(i=0;i<dataset.length;i++){
+          dataset[i][0] = label[i];
+          dataset[i][1] = dataset1[i];
+        }
+
+        return dataset;
+      }
     </script>
 
     <!-- GRAPH 2-->
 
     <script>
-      var chart2 = document.getElementById('myChart2').getContext('2d');
-      var myChart = new Chart(chart2, {
-        type: 'line',
-        data: {
-          //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          labels: label,
-          datasets: [{
-            label: '# random',
-            data: dataset2,
-            // backgroundColor: [
-            //   'rgba(255, 99, 132, 0.2)',
-            //   'rgba(54, 162, 235, 0.2)',
-            //   'rgba(255, 206, 86, 0.2)',
-            //   'rgba(75, 192, 192, 0.2)',
-            //   'rgba(153, 102, 255, 0.2)',
-            //   'rgba(255, 159, 64, 0.2)'
-            // ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              //   'rgba(54, 162, 235, 1)',
-              //   'rgba(255, 206, 86, 1)',
-              //   'rgba(75, 192, 192, 1)',
-              //   'rgba(153, 102, 255, 1)',
-              //   'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 3
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
+      //anychart.onDocumentReady(function (label,dataset1) {
+        // create data set on our data
+        var dataSet = anychart.data.set(getData(label,dataset2));
+        // map data for the first series, take x from the zero column and value from the first column of data set
+        var seriesData_1 = dataSet.mapAs({'x':0, 'value':1});
+        // create line chart
+        var chart2 = anychart.line();
+        // turn on chart animation
+        chart2.animation(true);
+        // turn on the crosshair
+        chart2.crosshair()
+                .enabled(true)
+                .yLabel(false)
+                .yStroke(null);
+
+        // set tooltip mode to point
+        chart2.tooltip().positionMode('point');
+        // set chart title text settings
+        chart2.title('selected months/dates');
+        // set yAxis title
+        chart2.yAxis().title('Data from Database');
+        chart2.xAxis().labels().padding(5);
+
+        // create first series with mapped data
+        var series_1 = chart2.line(seriesData_1);
+        series_1.name('random');
+        series_1.markers()
+                .enabled(true)
+                .type('circle')
+                .size(4);
+        series_1.tooltip()
+                .position('right')
+                .anchor('left-center')
+                .offsetX(5)
+                .offsetY(5);
+
+        chart2.legend()
+                .enabled(true)
+                .fontSize(13)
+                .padding([0, 0, 10, 0]);
+        // set container id for the chart
+        chart2.container('myChart2');
+        // initiate chart drawing
+        chart2.draw();
+      function getData(label,dataset2) {
+        var dataset = new Array(label.length);
+        for(i=0;i<dataset.length;i++){
+          dataset[i] = new Array(2);
         }
-      });
+        for(i=0;i<dataset.length;i++){
+          dataset[i][0] = label[i];
+          dataset[i][1] = dataset2[i];
+        }
+
+        return dataset;
+      }
+
+
+      // var chart2 = document.getElementById('myChart2').getContext('2d');
+      // var myChart = new Chart(chart2, {
+      //   type: 'line',
+      //   data: {
+      //     //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      //     labels: label,
+      //     datasets: [{
+      //       label: '# random',
+      //       data: dataset2,
+      //       // backgroundColor: [
+      //       //   'rgba(255, 99, 132, 0.2)',
+      //       //   'rgba(54, 162, 235, 0.2)',
+      //       //   'rgba(255, 206, 86, 0.2)',
+      //       //   'rgba(75, 192, 192, 0.2)',
+      //       //   'rgba(153, 102, 255, 0.2)',
+      //       //   'rgba(255, 159, 64, 0.2)'
+      //       // ],
+      //       borderColor: [
+      //         'rgba(255, 99, 132, 1)',
+      //         //   'rgba(54, 162, 235, 1)',
+      //         //   'rgba(255, 206, 86, 1)',
+      //         //   'rgba(75, 192, 192, 1)',
+      //         //   'rgba(153, 102, 255, 1)',
+      //         //   'rgba(255, 159, 64, 1)'
+      //       ],
+      //       borderWidth: 3
+      //     }]
+      //   },
+      //   options: {
+      //     scales: {
+      //       yAxes: [{
+      //         ticks: {
+      //           beginAtZero: true
+      //         }
+      //       }]
+      //     }
+      //   }
+      // });
+
+
     </script>
   </div>
 
   <script>
-    //document.getElementById('cmd').addEventListener("click", downloadPDF);
-    function downloadPDF1() {
-	    var Canvas = document.querySelector('#myChart1');
-
-      //create image from dummy canvas
-	    var CanvasImg = Canvas.toDataURL("image/jpeg", 1.0);
-  
-  	  //creates PDF from img
-	    var doc = new jsPDF('landscape');
-	    //doc.setFontSize(20);
-	    //doc.text(15, 15);
-	    doc.addImage(CanvasImg, 'JPEG', 20, 20, 250, 100);
-	    doc.save('canvas1.pdf');
+    function savePDF1(){
+      chart1.saveAsPdf('a2',true,5,5,'PdfChart1');
     }
-    //document.getElementById('cmd').addEventListener("click", downloadPDF);
-    function downloadPDF2() {
-	    var Canvas = document.querySelector('#myChart2');
-
-      //create image from dummy canvas
-	    var CanvasImg = Canvas.toDataURL("image/jpeg", 1.0);
-  
-  	  //creates PDF from img
-	    var doc = new jsPDF('landscape');
-	    //doc.setFontSize(20);
-	    //doc.text(15, 15);
-	    doc.addImage(CanvasImg, 'JPEG', 20, 20, 250, 100);
-	    doc.save('canvas2.pdf');
+    function savePDF2(){
+      chart2.saveAsPdf('a2',true,5,5,'PdfChart2');
     }
   </script>
 </body>
