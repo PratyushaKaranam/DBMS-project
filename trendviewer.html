@@ -76,30 +76,35 @@
       </tr>
     </table>
     <script>
-      var param = location.search.substring(1).split('&');
-      var temp;
-      var text = "";
+      
+      // Extracting dates/months from the URL
+
+      var URLparameters = location.search.substring(1).split('&');
+      var parameterKeyValue;
+      //var text = "";
       var label = new Array();
-      var lab = new Array();
+      var parametervalues = new Array();
       var day;
       var month;
       var year;
-      for (var i = 0; i < param.length; i++) {
-        temp = param[i].split("=");
-        label.push(unescape(temp[1]));
-        lab.push(unescape(temp[1]));
-        text += "<br>" + unescape(temp[1]);
+      for (var i = 0; i < URLparameters.length; i++) {
+        parameterKeyValue = URLparameters[i].split("=");
+        label.push(unescape(parameterKeyValue[1]));                             // label stores the months or dates to be used in the graph
+        parametervalues.push(unescape(parameterKeyValue[1]));
+        //text += "<br>" + unescape(parameterKeyValue[1]);
       }
       //document.getElementById("result").innerHTML += text;
-      if (temp[0] == 'enddate') {
-        var sdate = new Date(lab[0]);
-        var edate = new Date(lab[1]);
-        Date.prototype.addDay = function (days) {
+      if (parameterKeyValue[0] == 'enddate') {                                  // Checking if dates were selected
+        var sdate = new Date(parametervalues[0]);
+        var edate = new Date(parametervalues[1]);
+
+        Date.prototype.addDay = function (days) {                 // This function generates the date after n days
           var date = new Date(this.valueOf());
           date.setDate(date.getDate() + days);
           return date;
         }
-        function getDateArray(start, end) {
+        
+        function getDateArray(start, end) {                       // The function generates dates between Start and End date in MM-DD-YYYY format
           var arr = new Array();
           var dt = start;
           while (dt <= end) {
@@ -124,22 +129,23 @@
             var date1 = month + '-' + day + '-' + year;
             //alert(date1);
             arr.push(date1);
-            dt = dt.addDay(1);
-          }
+            dt = dt.addDay(1);                                     // call to the function addDay to generate the date for the next day
+          }                                                        // this is done till all dates between the start and the end date are generated
           //alert(arr);
           return arr;
         }
-        document.getElementById("startdate").innerHTML = lab[0];
-        document.getElementById("enddate").innerHTML = lab[1];
 
-        label = getDateArray(sdate.addDay(1), edate.addDay(1));
+        document.getElementById("startdate").innerHTML = parametervalues[0]; // This displays the start and end date on the page
+        document.getElementById("enddate").innerHTML = parametervalues[1];
+
+        label = getDateArray(sdate.addDay(1), edate.addDay(1));     // label stores the generated dates
         //alert(label);
 
         //alert(label);
         //document.getElementById("result1").innerHTML = label;
       }
 
-      var dataset1 = new Array();
+      var dataset1 = new Array();                                   // generates random data for the graph --->NOT IMPORTANT (will be removed later)
       var dataset2 = new Array();
       for (var i = 0; i < label.length; i++) {
         dataset1.push(Math.floor(Math.random() * label.length));
@@ -148,20 +154,18 @@
                 //alert(dataset);
     </script>
 
-    <!-- <div id="allcharts">
-                <div id="chart1"><canvas id="myChart1"></canvas></div>
-                <div id="chart2"><canvas id="myChart2"></canvas></div>
-              </div> -->
+    <!-- GRAPH 1-->
+
     <script>
-      var ctx = document.getElementById('myChart1').getContext('2d');
-      var myChart = new Chart(ctx, {
+      var chart1 = document.getElementById('myChart1').getContext('2d');
+      var myChart = new Chart(chart1, {
         type: 'line',
         data: {
           //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          labels: label,
+          labels: label,                                                    
           datasets: [{
             label: '# random',
-            data: dataset1,
+            data: dataset1,                                                 
             // backgroundColor: [
             //   'rgba(255, 99, 132, 0.2)',
             //   'rgba(54, 162, 235, 0.2)',
@@ -192,9 +196,12 @@
         }
       });
     </script>
+
+    <!-- GRAPH 2-->
+
     <script>
-      var ctx = document.getElementById('myChart2').getContext('2d');
-      var myChart = new Chart(ctx, {
+      var chart2 = document.getElementById('myChart2').getContext('2d');
+      var myChart = new Chart(chart2, {
         type: 'line',
         data: {
           //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],

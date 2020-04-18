@@ -84,6 +84,9 @@
       </script>
       <button onclick="func2()">Submit</button>
       <script>
+
+        // This function is passing the selected months in the URL as parameters to the trendviewer page
+
         function func2() {
           var checks = new Array();
           var ul = document.getElementById("months");
@@ -103,6 +106,9 @@
       </script>
     </div>
     <div id="sep">
+
+      <!-- Using GET request to pass the selected start and end date to the trendviewer page-->
+      
       <form id="form1" method="get" action="trendviewer.html">
         Start Date: <input type="date" id="startdate" name="startdate"><br>
         End Date: <input type="date" id="enddate" name="enddate"><br>
