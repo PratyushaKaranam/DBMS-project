@@ -11,6 +11,8 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 
 <script>
@@ -73,6 +75,10 @@
       <tr>
         <td><canvas id="myChart1"></canvas></td>
         <td><canvas id="myChart2"></canvas></td>
+      </tr>
+      <tr>
+        <td><button onclick="downloadPDF1()">DOWNLOAD</button></td>
+        <td><button onclick="downloadPDF2()">DOWNLOAD</button></td>
       </tr>
     </table>
     <script>
@@ -240,6 +246,37 @@
       });
     </script>
   </div>
+
+  <script>
+    //document.getElementById('cmd').addEventListener("click", downloadPDF);
+    function downloadPDF1() {
+	    var Canvas = document.querySelector('#myChart1');
+
+      //create image from dummy canvas
+	    var CanvasImg = Canvas.toDataURL("image/jpeg", 1.0);
+  
+  	  //creates PDF from img
+	    var doc = new jsPDF('landscape');
+	    //doc.setFontSize(20);
+	    //doc.text(15, 15);
+	    doc.addImage(CanvasImg, 'JPEG', 20, 20, 250, 100);
+	    doc.save('canvas1.pdf');
+    }
+    //document.getElementById('cmd').addEventListener("click", downloadPDF);
+    function downloadPDF2() {
+	    var Canvas = document.querySelector('#myChart2');
+
+      //create image from dummy canvas
+	    var CanvasImg = Canvas.toDataURL("image/jpeg", 1.0);
+  
+  	  //creates PDF from img
+	    var doc = new jsPDF('landscape');
+	    //doc.setFontSize(20);
+	    //doc.text(15, 15);
+	    doc.addImage(CanvasImg, 'JPEG', 20, 20, 250, 100);
+	    doc.save('canvas2.pdf');
+    }
+  </script>
 </body>
 
 </html>
