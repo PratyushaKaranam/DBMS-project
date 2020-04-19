@@ -52,8 +52,8 @@ async function buildCharts() {
 
     await charts.push(
         createLineChart(
-            "Daily average of total amount paid by taxi riders",
-            "Days in range",
+            "Daily average of total payments",
+            "Days",
             "Daily average",
             getDataset(arr1, arr2, arr3))
     );
@@ -62,6 +62,8 @@ async function buildCharts() {
 
 function drawCharts() {
     for (i = 0; i < charts.length; i++) {
+        // set container id for the chart
+        charts[i].container('chart' + i);
         charts[i].draw();
     }
 }
@@ -80,12 +82,19 @@ function getDataset(xData, yData1, yData2) {
     return anychart.data.set(dataset);
 }
 
+/**
+ * Configure chart series
+ * 
+ * !: This function only works with the average total per day trend.
+ * 
+ * TODO: generalize this function to work with other trends.
+ */
 function createLineChart(title, xlabel, ylabel, dataset) {
 
-    //? yellow data
+    /* yellow data */
     const seriesData_1 = dataset.mapAs({ 'x': 0, 'value': 1 });
 
-    //? green data
+    /* green data */
     const seriesData_2 = dataset.mapAs({ 'x': 0, 'value': 2 });
 
     /* Create line chart */
@@ -93,7 +102,6 @@ function createLineChart(title, xlabel, ylabel, dataset) {
 
     /* Configure chart settings */
     chart.animation(true);
-
 
     chart.crosshair()
         .enabled(true)
@@ -107,6 +115,7 @@ function createLineChart(title, xlabel, ylabel, dataset) {
     chart.xAxis().title(xlabel);
     chart.yAxis().title(ylabel);
 
+    /* First series configuration */
     let series1 = chart.line(seriesData_1);
     series1.markers()
         .enabled(true)
@@ -126,6 +135,7 @@ function createLineChart(title, xlabel, ylabel, dataset) {
         .offsetX(5)
         .offsetY(5);
 
+    /* Second series configuration */
     let series2 = chart.line(seriesData_2);
     series2.stroke({
         color: "green",
@@ -149,16 +159,13 @@ function createLineChart(title, xlabel, ylabel, dataset) {
         .enabled(true)
         .fontSize(13)
         .padding([0, 0, 10, 0]);
-    // set container id for the chart
-    chart.container('myChart2');
+
 
     return chart;
 }
 
 
-/**
- * Unsure if the rest of this code will be necessary
- */
+/* Unsure if the rest of the code below will be necessary */
 
 // Extracting dates/months from the URL
 
