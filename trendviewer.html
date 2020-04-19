@@ -70,11 +70,11 @@
         <td>
           <table style="width:100%">
             <tr>
-              <td>Start Date:</td>
+              <td id="startdatename"></td>
               <td id="startdate"></td>
             </tr>
             <tr>
-              <td>End Date:</td>
+              <td id="enddatename"></td>
               <td id="enddate"></td>
             </tr>
           </table>
@@ -154,7 +154,8 @@
           //alert(arr);
           return arr;
         }
-
+        document.getElementById("startdatename").innerHTML = 'START DATE:'; 
+        document.getElementById("enddatename").innerHTML = 'END DATE:';
         document.getElementById("startdate").innerHTML = parametervalues[0]; // This displays the start and end date on the page
         document.getElementById("enddate").innerHTML = parametervalues[1];
 
@@ -164,7 +165,16 @@
         //alert(label);
         //document.getElementById("result1").innerHTML = label;
       }
-
+      else{
+        var text ="";
+        for(var i=0;i<label.length;i++){
+          text += label[i] + ", ";
+        }
+        document.getElementById("startdatename").innerHTML = 'SELECTED MONTHS';
+        document.getElementById("startdate").innerHTML = text;
+        document.getElementById("enddatename").style.border= '0px black solid';
+        document.getElementById("enddate").style.border= '0px black solid';
+      }
       var dataset1 = new Array();                                   // generates random data for the graph --->NOT IMPORTANT (will be removed later)
       var dataset2 = new Array();
       for (var i = 0; i < label.length; i++) {
