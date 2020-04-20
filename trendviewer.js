@@ -1,17 +1,32 @@
 /* summary data from server */
 var financialSummaryData;
+var tripSummaryData;
+const urlParams = new URLSearchParams(window.location.search);
+const type = urlParams.get('type');
 
 //temporary global variables for testing
 var arr1, arr2, arr3;
 var charts = new Array();
 
 $(document).ready(function () {
-    buildCharts()
-        .then(drawCharts);
+    switch (type) {
+        case "financial":
+            buildFinancialCharts()
+                .then(drawCharts);
+            break;
+        case "trips":
+            buildTripCharts()
+                .then(drawCharts);
+            break;
+
+        default:
+            break;
+    }
 })
 
 async function queryServer() {
-    const urlParams = new URLSearchParams(window.location.search);
+
+
     const startdate = urlParams.get('startdate').split("-");
     const startyear = startdate[0], startmonth = startdate[1], startday = startdate[2];
 
@@ -24,9 +39,11 @@ async function queryServer() {
     document.getElementById("startdate").innerHTML = urlParams.get('startdate');
     document.getElementById("enddate").innerHTML = urlParams.get('enddate');
 
+    await console.log("type: " + type)
+
     const result = await $.ajax(
         {
-            url: "/api/test/trends?type=financial"
+            url: "/api/test/trends?type=" + type
                 + "&s_y=" + startyear
                 + "&s_mo=" + startmonth
                 + "&s_d=" + startday
@@ -36,6 +53,7 @@ async function queryServer() {
             type: "GET",
         }
     )
+    console.log(result)
 
     return result
 }
@@ -44,7 +62,7 @@ function saveChartPDF(chart_number) {
     charts[chart_number].saveAsPdf('a2', true, 5, 5, 'Chart #' + chart_number);
 }
 
-async function buildCharts() {
+async function buildFinancialCharts() {
     financialSummaryData = await queryServer();
     arr1 = financialSummaryData.Days
     arr2 = financialSummaryData.GrossRevPerDayYellow
@@ -57,6 +75,58 @@ async function buildCharts() {
             "Daily average",
             getDataset(arr1, arr2, arr3))
     );
+    console.log(charts.length);
+}
+
+async function buildTripCharts() {
+    tripSummaryData = await queryServer();
+
+
+    // await charts.push(
+    //     createLineChart(
+    //         "Daily average of total payments",
+    //         "Days",
+    //         "Daily average",
+    //         getDataset(arr1, arr2, arr3))
+    // );
+
+    charts.push(
+        createPieChart(
+            "Top Early Pickup Locations",
+            getPieDataset(
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Pickup.Zone,
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Pickup.Count,
+            )
+        )
+    )
+    charts.push(
+        createPieChart(
+            "Top Early Dropoff Locations",
+            getPieDataset(
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Dropoff.Zone,
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Dropoff.Count,
+            )
+        )
+    )
+    charts.push(
+        createPieChart(
+            "Top Late Pickup Locations",
+            getPieDataset(
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Pickup.Zone,
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Pickup.Count,
+            )
+        )
+    )
+
+    charts.push(
+        createPieChart(
+            "Top Late Dropoff Locations",
+            getPieDataset(
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Dropoff.Zone,
+                tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Dropoff.Count,
+            )
+        )
+    )
     console.log(charts.length);
 }
 
@@ -82,6 +152,19 @@ function getDataset(xData, yData1, yData2) {
     return anychart.data.set(dataset);
 }
 
+function getPieDataset(labels, values) {
+    let dataset = new Array(labels.length);
+
+    for (i = 0; i < dataset.length; i++) {
+        dataset[i] = new Array(2); //! This could be made more generic
+    }
+    for (i = 0; i < dataset.length; i++) {
+        dataset[i][0] = labels[i];
+        dataset[i][1] = values[i];
+    }
+    return anychart.data.set(dataset);
+}
+
 /**
  * Configure chart series
  * 
@@ -89,6 +172,19 @@ function getDataset(xData, yData1, yData2) {
  * 
  * TODO: generalize this function to work with other trends.
  */
+
+function createPieChart(title, dataset) {
+    const data = dataset.mapAs({ 'x': 0, 'value': 1 });
+
+    var chart = anychart.pie(data);
+
+    chart.animation(true);
+
+    chart.title(title)
+
+    return chart;
+}
+
 function createLineChart(title, xlabel, ylabel, dataset) {
 
     /* yellow data */
@@ -177,8 +273,8 @@ var parametervalues = new Array();
 var day;
 var month;
 var year;
-var type = URLparameters[0].split("=");
-var builder = unescape(type[1]);                                        // builder stores whether tripAndLocation or Financial
+// var type = URLparameters[0].split("=");
+// var builder = unescape(type[1]);                                        // builder stores whether tripAndLocation or Financial
 //alert(builder);                                               
 for (var i = 1; i < URLparameters.length; i++) {
     parameterKeyValue = URLparameters[i].split("=");
