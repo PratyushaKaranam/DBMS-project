@@ -31,10 +31,60 @@
 
 <!-- some basic css for styling issues -->
 <style>
-  .charts {
-    width: 100%;
-    height: 100%;
+  #frame {
+
+    width: 90%;
+    border: 5px black solid;
+    margin-left: auto;
+    margin-right: auto;
   }
+
+  #chartView {
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    width: 100%;
+    height: 70%;
+    margin: 0;
+    padding: 0;
+    background-color: blueviolet;
+  }
+
+  .chart {
+    /* width: 100%; */
+    /* height: 100%; */
+    background-color: aquamarine;
+  }
+
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    gap: 5px;
+    /* grid-auto-rows: minmax(100px, auto); */
+    grid-auto-rows: minmax(400px, auto);
+  }
+
+  .text-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    gap: 5px;
+    /* grid-auto-rows: minmax(100px, auto); */
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  .wrapper2 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    gap: 5px;
+    /* grid-auto-rows: minmax(100px, auto); */
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  /* .box1 {
+    width: 50%
+  } */
 </style>
 
 <body>
@@ -56,49 +106,59 @@
         <a class="nav-link" href="ft.html">Financial Trends</a>
       </li>
     </ul>
-    <!-- <div id="result">Data: </div>
+  </div>
+  <!-- <div id="result">Data: </div>
             <div id="result1">Dates: </div> -->
-    <table id="charts" style="width:100%">
-      <tr>
-        <td>Summary Statistics</td>
-        <td>
-          <table style="width:100%">
-            <tr>
-              <td id="startdatename"></td>
-              <td id="startdate"></td>
-            </tr>
-            <tr>
-              <td id="enddatename"></td>
-              <td id="enddate"></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <!-- this id will change when other charts added-->
-          <div class="charts" id="myChart1"></div>
-        </td>
-        <td>
-          <div class="charts" id="chart0"></div>
-        </td>
-        <td>
-          <div class="charts" id="chart1"></div>
-        </td>
-        <td>
-          <div class="charts" id="chart2"></div>
-        </td>
-        <td>
-          <div class="charts" id="chart3"></div>
-        </td>
-      </tr>
-      <tr>
-        <td><button onclick="saveChartPDF(0)">not working: DOWNLOAD</button></td>
-        <td><button onclick="saveChartPDF(0)">DOWNLOAD</button></td>
-      </tr>
-    </table>
+
+  <!-- startdate:
+    <dialog id="startdatename">
+    </dialog>
+    enddate:
+    <dialog id="enddatename">
+    </dialog>
+    <div style="border: 1px black soild;">
+      <table style="width:100%; height: 100%;">
+        <tr>
+          <th id="startdatename"></th>
+          <th id="enddatename"></th>
+        </tr>
+        <tr>
+          <td id="startdate"></td>
+          <td id="enddate"></td>
+        </tr>
+        <tr></tr>
+      </table>
+    </div> -->
+
+  <div id="frame">
+
+    <div class="wrapper2">
+
+      <div class="box2 text-wrapper">
+        <div id="dateinfo">Loading...</div>
+        <div id="summary"></div>
+      </div>
+
+      <div class="box1 wrapper">
+        <div class="chart" id="chart0"></div>
+        <div class="chart" id="chart1"></div>
+        <div class="chart" id="chart2"></div>
+        <div class="chart" id="chart3"></div>
+
+      </div>
+    </div>
 
   </div>
+  <!-- 
+  <div class="chart" id="chart1"></div>
+  <div id="chartView">
+    <div class="chart" id="chart0"></div>
+    <div class="chart" id="chart2"></div>
+    <div class="chart" id="chart3"></div>
+    <div class="chart" id="chart4"></div>
+  </div> -->
+
+
 
 </body>
 

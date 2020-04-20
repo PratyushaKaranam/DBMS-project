@@ -96,7 +96,7 @@
               checks.push(chk[i].value);
             }
           }
-          var query = "?type=" + "tripAndLocation";
+          var query = "?type=" + "trips";
           for (var j = 0; j < checks.length; j++) {
             query += "&q" + (j + 1) + "=" + checks[j];
           }
@@ -108,24 +108,24 @@
     <div id="sep">
 
       <!-- Using GET request to pass the selected start and end date to the trendviewer page-->
-      
+
       <!-- <form id="form1" method="get" action="trendviewer.html"> -->
       <div id="form1">
         Start Date: <input type="date" id="startdate" name="startdate"><br>
         End Date: <input type="date" id="enddate" name="enddate"><br>
         <button onclick="func3()">Submit</button>
       </div>
-        <!-- </form> -->
+      <!-- </form> -->
       <script>
-        function func3(){
+        function func3() {
           var sedate = new Array();
           var dates = document.getElementById("form1");
           var date = dates.getElementsByTagName("input");
-          for (var i=0;i<date.length;i++){
+          for (var i = 0; i < date.length; i++) {
             sedate.push(date[i].value);
           }
           //alert(sedate);
-          var query = "?type=" + "tripAndLocation";
+          var query = "?type=" + "trips";
           query += "&startdate=" + sedate[0] + "&enddate=" + sedate[1];
           //alert(query);
 

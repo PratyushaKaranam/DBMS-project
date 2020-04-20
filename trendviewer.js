@@ -3,6 +3,10 @@ var financialSummaryData;
 var tripSummaryData;
 const urlParams = new URLSearchParams(window.location.search);
 const type = urlParams.get('type');
+const startdate = urlParams.get('startdate').split("-");
+const startyear = startdate[0], startmonth = startdate[1], startday = startdate[2];
+const enddate = urlParams.get('enddate').split("-");
+const endyear = enddate[0], endmonth = enddate[1], endday = enddate[2];
 
 //temporary global variables for testing
 var arr1, arr2, arr3;
@@ -20,27 +24,13 @@ $(document).ready(function () {
             break;
 
         default:
+            alert("WAHT");
             break;
     }
 })
 
 async function queryServer() {
-
-
-    const startdate = urlParams.get('startdate').split("-");
-    const startyear = startdate[0], startmonth = startdate[1], startday = startdate[2];
-
-    const enddate = urlParams.get('enddate').split("-");
-    const endyear = enddate[0], endmonth = enddate[1], endday = enddate[2];
-
-
-    document.getElementById("startdatename").innerHTML = 'START DATE:';
-    document.getElementById("enddatename").innerHTML = 'END DATE:';
-    document.getElementById("startdate").innerHTML = urlParams.get('startdate');
-    document.getElementById("enddate").innerHTML = urlParams.get('enddate');
-
-    await console.log("type: " + type)
-
+    console.log("we get here");
     const result = await $.ajax(
         {
             url: "/api/test/trends?type=" + type
@@ -53,9 +43,9 @@ async function queryServer() {
             type: "GET",
         }
     )
-    console.log(result)
+    console.log(result);
 
-    return result
+    return result;
 }
 
 function saveChartPDF(chart_number) {
@@ -76,6 +66,8 @@ async function buildFinancialCharts() {
             getDataset(arr1, arr2, arr3))
     );
     console.log(charts.length);
+
+
 }
 
 async function buildTripCharts() {
@@ -90,13 +82,14 @@ async function buildTripCharts() {
     //         getDataset(arr1, arr2, arr3))
     // );
 
+
     charts.push(
         createPieChart(
             "Top Early Pickup Locations",
             getPieDataset(
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Pickup.Zone,
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Pickup.Count,
-            )
+            ), 1
         )
     )
     charts.push(
@@ -105,7 +98,7 @@ async function buildTripCharts() {
             getPieDataset(
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Dropoff.Zone,
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopEarlyLocations.Dropoff.Count,
-            )
+            ), 2
         )
     )
     charts.push(
@@ -114,7 +107,7 @@ async function buildTripCharts() {
             getPieDataset(
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Pickup.Zone,
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Pickup.Count,
-            )
+            ), 3
         )
     )
 
@@ -124,18 +117,48 @@ async function buildTripCharts() {
             getPieDataset(
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Dropoff.Zone,
                 tripSummaryData.BoroughSummary.TopLocationsByTime.TopLateLocations.Dropoff.Count,
-            )
+            ), 4
         )
     )
+
+    document.getElementById("dateinfo").innerHTML =
+        'Date in range:<br />' +
+        'Start: ' + startdate.join('/') + '<br />' +
+        'End: ' + enddate.join('/')
+    document.getElementById('summary').innerHTML =
+
+        `
+        <div>
+            Summary Information <br />
+            Most pickups: ${tripSummaryData.MostPickups}
+        </div>
+        `
     console.log(charts.length);
 }
 
 function drawCharts() {
+
+    // var stage = anychart.graphics.create("chartView");
+    var customTheme = {
+        "defaultFontSettings": {
+            "fontSize": 9
+        },
+        //     "chart": {
+
+        //     }
+    }
+
+    // anychart.theme(customTheme);
+
     for (i = 0; i < charts.length; i++) {
         // set container id for the chart
-        charts[i].container('chart' + i);
+        charts[i].container("chart" + i);
+        console.log("NANIT")
         charts[i].draw();
     }
+
+
+
 }
 
 function getDataset(xData, yData1, yData2) {
@@ -173,7 +196,7 @@ function getPieDataset(labels, values) {
  * TODO: generalize this function to work with other trends.
  */
 
-function createPieChart(title, dataset) {
+function createPieChart(title, dataset, order) {
     const data = dataset.mapAs({ 'x': 0, 'value': 1 });
 
     var chart = anychart.pie(data);
@@ -182,10 +205,25 @@ function createPieChart(title, dataset) {
 
     chart.title(title)
 
+    // switch (order) {
+    //     case 1:
+    //         chart.bounds(0, 0, 400, 400);
+    //         break;
+    //     case 2:
+    //         chart.bounds(400, 0, 400, 800);
+    //         break;
+    //     case 3:
+    //         chart.bounds(0, 400, 400, 800);
+    //         break;
+    //     case 4:
+    //         chart.bounds(400, 400, 800, 800);
+    //         break;
+    // }
+
     return chart;
 }
 
-function createLineChart(title, xlabel, ylabel, dataset) {
+function createLineChart(title, xlabel, ylabel, dataset, bounds) {
 
     /* yellow data */
     const seriesData_1 = dataset.mapAs({ 'x': 0, 'value': 1 });
@@ -303,12 +341,12 @@ if (parameterKeyValue[0] == 'enddate') {                                  // Che
 else {
     var text = "";
     for (var i = 0; i < label.length; i++) {
-        text += label[i] + ", ";
+        text += label[i] + "<br>";
     }
-    document.getElementById("startdatename").innerHTML = 'SELECTED MONTHS:';
-    document.getElementById("startdate").innerHTML = text;
-    document.getElementById("enddatename").style.border = '0px black solid';
-    document.getElementById("enddate").style.border = '0px black solid';
+    // document.getElementById("startdatename").innerHTML = 'SELECTED MONTHS:';
+    // document.getElementById("startdate").innerHTML = text;
+    // document.getElementById("enddatename").style.border = '0px black solid';
+    // document.getElementById("enddate").style.border = '0px black solid';
 }
 
 var dataset1 = new Array();                                   // generates random data for the graph --->NOT IMPORTANT (will be removed later)
