@@ -82,6 +82,12 @@
     grid-auto-rows: minmax(100px, auto);
   }
 
+  .togglebtn {
+    width: 15%;
+    height: 8%;
+    font-size: 0.8vw;
+  }
+
   /* .box1 {
     width: 50%
   } */
@@ -107,57 +113,42 @@
       </li>
     </ul>
   </div>
-  <!-- <div id="result">Data: </div>
-            <div id="result1">Dates: </div> -->
-
-  <!-- startdate:
-    <dialog id="startdatename">
-    </dialog>
-    enddate:
-    <dialog id="enddatename">
-    </dialog>
-    <div style="border: 1px black soild;">
-      <table style="width:100%; height: 100%;">
-        <tr>
-          <th id="startdatename"></th>
-          <th id="enddatename"></th>
-        </tr>
-        <tr>
-          <td id="startdate"></td>
-          <td id="enddate"></td>
-        </tr>
-        <tr></tr>
-      </table>
-    </div> -->
 
   <div id="frame">
 
     <div class="wrapper2">
 
       <div class="box2 text-wrapper">
-        <div id="dateinfo">Loading...</div>
+        <div id="dateinfo">Loading... this may take a minute...</div>
         <div id="summary"></div>
       </div>
 
       <div class="box1 wrapper">
-        <div class="chart" id="chart0"></div>
-        <div class="chart" id="chart1"></div>
-        <div class="chart" id="chart2"></div>
-        <div class="chart" id="chart3"></div>
+        <div>
+          <button class="togglebtn" onclick="switchLayer(0)">Toggle</button>
+          <button class="togglebtn" onclick="switchLayer(0)">Download</button>
+          <div class="chart" id="chart0"></div>
+        </div>
+        <div>
+          <button class="togglebtn" onclick="switchLayer(1)">Toggle</button>
+          <button class="togglebtn" onclick="switchLayer(1)">Download</button>
+          <div class="chart" id="chart1"> </div>
+        </div>
+        <div>
+          <button class="togglebtn" onclick=" switchLayer(2)">Toggle</button>
+          <button class="togglebtn" onclick="saveChartPDF(2)">Download</button>
+          <div class="chart" id="chart2"> </div>
+        </div>
+        <div>
+          <button class="togglebtn" onclick="switchLayer(3)">Toggle</button>
+          <button class="togglebtn" onclick="switchLayer(3)">Download</button>
+          <div class="chart" id="chart3"> </div>
+        </div>
 
       </div>
     </div>
 
   </div>
-  <!-- 
-  <div class="chart" id="chart1"></div>
-  <div id="chartView">
-    <div class="chart" id="chart0"></div>
-    <div class="chart" id="chart2"></div>
-    <div class="chart" id="chart3"></div>
-    <div class="chart" id="chart4"></div>
-  </div> -->
-
 
 
 </body>
