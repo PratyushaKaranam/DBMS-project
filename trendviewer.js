@@ -207,7 +207,7 @@ if (parameterKeyValue[0] == 'enddate') {                                  // Che
 else {
     var text = "";
     for (var i = 0; i < label.length; i++) {
-        text += label[i] + ", ";
+        text += label[i] + "<br>";
     }
     document.getElementById("startdatename").innerHTML = 'SELECTED MONTHS:';
     document.getElementById("startdate").innerHTML = text;

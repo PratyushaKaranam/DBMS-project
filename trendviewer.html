@@ -58,7 +58,43 @@
     </ul>
     <!-- <div id="result">Data: </div>
             <div id="result1">Dates: </div> -->
+    
     <table id="charts" style="width:100%">
+      <tr>
+        <td>
+          <div style="width:40%; height: 100%; border: 1px black soild;">
+            <table style="width:100%; height: 100%;">
+              <tr>
+                <th id="startdatename"></th>
+                <th id="enddatename"></th> 
+              </tr>
+              <tr>
+                <td id="startdate"></td>
+                <td id="enddate"></td>
+              </tr>
+              <tr></tr>
+            </table>
+          </div>
+          <div style="width:60%; height: 100%; float: left; text-align: center;">
+            <h5>Summary Statistics</h5>
+          </div>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <!-- this name will change when other charts added-->
+          <div class="charts" id="myChart1"></div>
+        </td>
+        <td>
+          <div class="charts" id="chart0"></div>
+        </td>
+      </tr>
+      <tr>
+        <td><button onclick="saveChartPDF(0)">not working: DOWNLOAD</button></td>
+        <td><button onclick="saveChartPDF(0)">DOWNLOAD</button></td>
+      </tr>
+    </table>
+    <!-- <table id="charts" style="width:100%">
       <tr>
         <td>Summary Statistics</td>
         <td>
@@ -76,7 +112,7 @@
       </tr>
       <tr>
         <td>
-          <!-- this name will change when other charts added-->
+          this name will change when other charts added
           <div class="charts" id="myChart1"></div>
         </td>
         <td>
@@ -87,7 +123,7 @@
         <td><button onclick="saveChartPDF(0)">not working: DOWNLOAD</button></td>
         <td><button onclick="saveChartPDF(0)">DOWNLOAD</button></td>
       </tr>
-    </table>
+    </table> -->
 
   </div>
 
